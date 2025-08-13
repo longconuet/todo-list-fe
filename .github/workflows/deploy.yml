@@ -44,4 +44,4 @@ jobs:
             # -v: verbose, hiển thị chi tiết
             # -z: nén dữ liệu khi truyền
             # --delete: xóa các file ở đích không có ở nguồn
-            rsync -avz --delete ./build/ /var/www/todoapp-web/
+            rsync -avz --delete build/ /var/www/todoapp-web/
