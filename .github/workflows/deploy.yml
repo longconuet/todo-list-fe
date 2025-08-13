@@ -43,7 +43,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: react-app-build
-          path: ./build
+          path: ./dist
 
   #################################
   # GIAI ĐOẠN 2: TRIỂN KHAI       #
@@ -59,7 +59,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: react-app-build
-          path: ./build
+          path: ./dist
 
       # Bước 2: Deploy các file tĩnh lên máy chủ
       # Ví dụ này sử dụng SCP để sao chép thư mục 'build' đến máy chủ của bạn
@@ -69,5 +69,5 @@ jobs:
           host: ${{ secrets.VPS_HOST }}             # IP hoặc tên miền của máy chủ
           username: ${{ secrets.VPS_USERNAME }}     # Tên người dùng để đăng nhập SSH
           key: ${{ secrets.VPS_SSH_KEY }}       # Khóa riêng SSH để xác thực
-          source: "./build/*"                        # Sao chép toàn bộ nội dung trong thư mục 'build'
+          source: "./dist/*"                        # Sao chép toàn bộ nội dung trong thư mục 'build'
           target: "/var/www/todoapp-web"            # Thư mục đích trên máy chủ
