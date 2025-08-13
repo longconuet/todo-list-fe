@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { toast, Toaster } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2 } from 'lucide-react';
 import TodoListHeader from "./components/TodoListHeader";
 import TodoStats from "./components/TodoStats";
 import AddTodoForm from "./components/AddTodoForm";

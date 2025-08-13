@@ -1,4 +1,3 @@
-import React from 'react';
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Trash2, Loader2 } from 'lucide-react';
