@@ -93,7 +93,7 @@ jobs:
             MESSAGE="*Repository:* \`${{ github.repository }}\`"
           else
             STATUS="❌ *CI/CD THẤT BẠI*"
-            MESSAGE="*Repository:* \`${{ github.repository }}\`"
+            MESSAGE="*Repository:* \`${{ github.repository }}\`%0A"
             MESSAGE+="*Xem chi tiết tại:* [Link to Action](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
           fi
 
