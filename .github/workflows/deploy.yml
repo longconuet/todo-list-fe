@@ -89,23 +89,21 @@ jobs:
         run: |
           if [[ ${{ needs.deploy.result }} == 'success' ]]; then
             STATUS="✅ *CI/CD THÀNH CÔNG*"
-            MESSAGE="*Repository:* `${{ github.repository }}`"
+            # Dùng \` để vô hiệu hóa dấu backtick
+            MESSAGE="*Repository:* \`${{ github.repository }}\`"
           else
             STATUS="❌ *CI/CD THẤT BẠI*"
-            MESSAGE="*Repository:* `${{ github.repository }}`"
+            MESSAGE="*Repository:* \`${{ github.repository }}\`"
             MESSAGE+="*Xem chi tiết tại:* [Link to Action](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
           fi
 
           # -- Dựng nội dung tin nhắn --
-          TEXT="$STATUS%0A%0A"
-          TEXT+="*Commit:* `${{ github.sha }}`%0A"
-          TEXT+="$MESSAGE"
+          # Dùng \` ở đây nữa
+          TEXT="$STATUS%0A%0A*Commit:* \`${{ github.sha }}\`%0A$MESSAGE"
 
           # -- Gửi tin nhắn qua Telegram API --
-          curl --location 'https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage' \
-          --header 'Content-Type: application/json' \
-          --data "{
-              \"chat_id\": \"${{ secrets.TELEGRAM_CHAT_ID }}\",
-              \"text\": \"$TEXT\",
-              \"parse_mode\": \"MarkdownV2\"
-          }"
+          # Sử dụng -d cho từng tham số để tránh lỗi cú pháp phức tạp
+          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
+            -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
+            -d text="$TEXT" \
+            -d parse_mode="MarkdownV2"
