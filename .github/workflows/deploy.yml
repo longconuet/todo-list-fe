@@ -70,7 +70,7 @@ jobs:
           username: ${{ secrets.VPS_USERNAME }}     # Tên người dùng để đăng nhập SSH
           key: ${{ secrets.VPS_SSH_KEY }}       # Khóa riêng SSH để xác thực
           source: "./dist/*"                        # Sao chép toàn bộ nội dung trong thư mục 'build'
-          target: "/var/www/todoapp-web"            # Thư mục đích trên máy chủ
+          target: "/var/www/todoapp-web1"            # Thư mục đích trên máy chủ
           overwrite: true
 
   ################################
