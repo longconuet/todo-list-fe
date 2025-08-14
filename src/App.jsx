@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { toast, Toaster } from "sonner";
-import { Loader2 } from 'lucide-react';
+import { Loader2 } from "lucide-react";
 import TodoListHeader from "./components/TodoListHeader";
 import TodoStats from "./components/TodoStats";
 import AddTodoForm from "./components/AddTodoForm";
@@ -90,6 +90,32 @@ function App() {
     setShowConfirmModal(true);
   }, []);
 
+  const handleUpdateTodoTitle = useCallback(
+    (id, title) => {
+      setLoadingTodoId(id);
+      const todo = todos.find((todo) => todo.id === id);
+      todoService
+        .updateTodo(
+          id,
+          { ...todo, title },
+          { successMessage: "Todo title updated successfully!" }
+        )
+        .then(() => {
+          const newTodos = todos.map((todo) => {
+            if (todo.id === id) {
+              return { ...todo, title };
+            }
+            return todo;
+          });
+          setTodos(newTodos);
+        })
+        .finally(() => {
+          setLoadingTodoId(null);
+        });
+    },
+    [todos]
+  );
+
   const confirmDeleteTodo = useCallback(() => {
     setIsDeletingTodo(true);
     todoService
@@ -136,6 +162,7 @@ function App() {
                     todo={todo}
                     handleUpdateTodo={handleUpdateTodo}
                     handleDeleteTodo={handleDeleteTodo}
+                    handleUpdateTodoTitle={handleUpdateTodoTitle}
                     loadingTodoId={loadingTodoId}
                   />
                 ))}
