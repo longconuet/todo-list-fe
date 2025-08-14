@@ -42,7 +42,7 @@ jobs:
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: react-app-build
+          name: vite-app-build
           path: ./dist
 
   #################################
@@ -54,11 +54,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Bước 1: Tải xuống thư mục 'build' đã được lưu ở job trước
+      # Bước 1: Tải xuống thư mục 'dist' đã được lưu ở job trước
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
-          name: react-app-build
+          name: vite-app-build
           path: ./dist
 
       # Bước 2: Deploy các file tĩnh lên máy chủ
