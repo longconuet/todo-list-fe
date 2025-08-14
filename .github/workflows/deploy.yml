@@ -85,14 +85,27 @@ jobs:
     
     runs-on: ubuntu-latest
     steps:
-      - name: Send Telegram notification on success
-        # Chỉ chạy bước này nếu TẤT CẢ các job trong 'needs' đều thành công
-        if: success()
+      - name: Send notification
         run: |
-          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} -d text="✅ Deploy THÀNH CÔNG cho repository: ${{ github.repository }}. Commit: ${{ github.sha }}"
+          if [[ ${{ needs.deploy.result }} == 'success' ]]; then
+            STATUS="✅ *CI/CD THÀNH CÔNG*"
+            MESSAGE="*Repository:* `${{ github.repository }}`"
+          else
+            STATUS="❌ *CI/CD THẤT BẠI*"
+            MESSAGE="*Repository:* `${{ github.repository }}`"
+            MESSAGE+="*Xem chi tiết tại:* [Link to Action](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+          fi
 
-      - name: Send Telegram notification on failure
-        # Chỉ chạy bước này nếu CÓ BẤT KỲ job nào trong 'needs' bị thất bại
-        if: failure()
-        run: |
-          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} -d text="❌ Deploy THẤT BẠI cho repository: ${{ github.repository }}. Commit: ${{ github.sha }}. Xem chi tiết tại: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          # -- Dựng nội dung tin nhắn --
+          TEXT="$STATUS%0A%0A"
+          TEXT+="*Commit:* `${{ github.sha }}`%0A"
+          TEXT+="$MESSAGE"
+
+          # -- Gửi tin nhắn qua Telegram API --
+          curl --location 'https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage' \
+          --header 'Content-Type: application/json' \
+          --data "{
+              \"chat_id\": \"${{ secrets.TELEGRAM_CHAT_ID }}\",
+              \"text\": \"$TEXT\",
+              \"parse_mode\": \"MarkdownV2\"
+          }"
