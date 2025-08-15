@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  todolistapp:
+    # Quan trọng: Sử dụng biến môi trường được ghi từ GitHub Actions
+    image: ${DOCKER_IMAGE}
+    container_name: todolistapp
+    ports:
+      # Ánh xạ cổng 80 của container ra cổng 8000 của VPS
+      # Bạn có thể đổi cổng 8000 thành cổng bạn muốn
+      - "8000:80"
+    restart: always
