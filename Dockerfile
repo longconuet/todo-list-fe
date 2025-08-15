@@ -1,6 +1,6 @@
 # GIAI ĐOẠN 1: Build ứng dụng React
 # Sử dụng một image Node.js chính thức làm image cơ sở. Chọn phiên bản LTS.
-FROM node:20-alpine@sha256:secure-digest AS builder
+FROM node:20-alpine AS builder
 
 # Thiết lập thư mục làm việc trong container
 WORKDIR /app
