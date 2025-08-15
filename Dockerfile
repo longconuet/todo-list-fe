@@ -14,6 +14,12 @@ RUN npm ci
 # Sao chép toàn bộ mã nguồn của dự án vào thư mục làm việc
 COPY . .
 
+# 1. Khai báo một build-time argument. Tên này phải trùng với tên bạn truyền từ file workflow.
+ARG VITE_API_URL
+# 2. Gán argument đó vào một biến môi trường để lệnh "npm run build" có thể truy cập.
+ENV VITE_API_URL=$VITE_API_URL
+# -------------------------
+
 # Build ứng dụng cho môi trường production
 RUN npm run build
 
