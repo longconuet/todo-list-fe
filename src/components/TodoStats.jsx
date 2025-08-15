@@ -1,10 +1,8 @@
-
-
 function TodoStats({ totalTasks, completedTasks, unfinishedTasks }) {
   return (
     <div className="grid grid-cols-3 gap-4 mb-4 text-center">
       <div className="p-4 rounded-lg shadow-md bg-blue-100">
-        <p className="text-lg font-semibold">Total Tasks</p>
+        <p className="text-lg font-semibold">Total</p>
         <p className="text-2xl">{totalTasks}</p>
       </div>
       <div className="p-4 rounded-lg shadow-md bg-green-100">

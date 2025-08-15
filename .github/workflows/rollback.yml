@@ -1,0 +1,56 @@
+# Tên của quy trình
+name: Rollback
+
+# Điều kiện kích hoạt
+on:
+  # Cho phép chạy thủ công từ tab Actions
+  workflow_dispatch:
+    # Thêm các trường nhập liệu để người dùng điền vào khi chạy
+    inputs:
+      commit_sha:
+        description: 'Nhập vào mã commit SHA đầy đủ của phiên bản muốn rollback về'
+        required: true
+        type: string
+
+jobs:
+  ##########################################################
+  # JOB: THỰC HIỆN ROLLBACK TRÊN VPS                       #
+  ##########################################################
+  rollback:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Display Rollback Information
+        run: |
+          echo "🚨 Starting rollback process..."
+          echo "➡️ Target repository: ${{ github.repository }}"
+          echo "️️Target commit SHA: ${{ github.event.inputs.commit_sha }}"
+
+      - name: Deploy previous version to VPS
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            # Di chuyển tới thư mục triển khai
+            cd ${{ secrets.DOCKER_DEPLOY_PATH }}
+
+            # XÂY DỰNG LẠI TÊN IMAGE ĐẦY ĐỦ VỚI TAG LÀ COMMIT SHA ĐƯỢC NHẬP VÀO
+            FULL_IMAGE_NAME="${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.event.inputs.commit_sha }}"
+
+            # Ghi tên image vào file .env để docker-compose đọc
+            echo "DOCKER_IMAGE=${FULL_IMAGE_NAME}" > .env
+
+            echo "Rolling back to image: ${FULL_IMAGE_NAME}"
+
+            # Đăng nhập vào Docker Hub trên VPS
+            echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login --username "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+            # Kéo (pull) phiên bản image cũ đã chỉ định
+            docker-compose pull
+
+            # Khởi động lại container với image cũ
+            docker-compose up -d --remove-orphans --filter "until=24h"
+
+            echo "✅ Rollback completed successfully!"
