@@ -52,6 +52,8 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.sha }}
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:latest
           cache-from: type=gha # Bật cache đọc từ GitHub Actions
+          build-args: |
+            VITE_API_URL=${{ vars.VITE_API_URL_DOCKER }}
 
   ##########################################################
   # JOB 2: DEPLOY IMAGE LÊN MÁY CHỦ (VPS)                  #
